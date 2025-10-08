@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: weekly
+      timezone: America/Chicago
+    labels:
+      - 🤖 dependabot
+    groups:
+      cargo:
+        patterns:
+          - "*"
