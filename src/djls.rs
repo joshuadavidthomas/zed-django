@@ -1,7 +1,10 @@
 use std::path::PathBuf;
+
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
-use zed_extension_api::{self as zed};
+use zed_extension_api::{
+    self as zed,
+};
 
 const GITHUB_REPO: &str = "joshuadavidthomas/django-language-server";
 const BINARY_NAME: &str = "djls";
