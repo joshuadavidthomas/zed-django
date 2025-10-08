@@ -1,10 +1,10 @@
 id = "django"
 name = "Django"
 description = "Django support"
-version = "5.2.1"
+version = "0.1.0"
 schema_version = 1
 authors = ["Josh Thomas <josh@joshthomas.dev>"]
-repository = "https://github.com/joshuadavidthomas/django-language-server"
+repository = "https://github.com/joshuadavidthomas/zed-django"
 
 [language_servers.djls]
 name = "Django Language Server"

@@ -758,7 +758,7 @@ dependencies = [
 
 [[package]]
 name = "zed-django"
-version = "5.2.1"
+version = "0.1.0"
 dependencies = [
  "zed_extension_api",
 ]

@@ -16,13 +16,17 @@ clean:
     cargo clean
 
 clippy *ARGS:
-    cargo clippy --all-targets --all-features --benches --fix {{ ARGS }} -- -D warnings
+    cargo clippy --all-targets --all-features --fix {{ ARGS }} -- -D warnings
 
 fmt *ARGS:
     cargo +nightly fmt {{ ARGS }}
 
-# run pre-commit on all files
 lint:
     @just --fmt
+    @just clippy
     @just fmt
+    @just pre-commit
+    @just check
+
+pre-commit:
     uv run --with pre-commit-uv pre-commit run --all-files
