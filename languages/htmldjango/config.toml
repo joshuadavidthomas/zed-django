@@ -1,0 +1,16 @@
+name = "Django"
+grammar = "htmldjango"
+path_suffixes = ["djhtml"]
+first_line_pattern = "^\\{%\\s*(extends|load|block)"
+line_comments = ["{# ", " #}"]
+block_comment = ["{% comment %}", " {% endcomment %}"]
+
+autoclose_before = "}])>"
+
+brackets = [
+    { start = "{{", end = "}}", close = true, newline = true },
+    { start = "{%", end = "%}", close = true, newline = true },
+    { start = "{#", end = "#}", close = true, newline = false },
+]
+
+word_characters = ["-"]

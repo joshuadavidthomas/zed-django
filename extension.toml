@@ -1,0 +1,15 @@
+id = "django"
+name = "Django"
+description = "Django support"
+version = "5.2.1"
+schema_version = 1
+authors = ["Josh Thomas <josh@joshthomas.dev>"]
+repository = "https://github.com/joshuadavidthomas/django-language-server"
+
+[language_servers.djls]
+name = "Django Language Server"
+languages = ["Django"]
+
+[grammars.htmldjango]
+repository = "https://github.com/joshuadavidthomas/tree-sitter-htmldjango"
+commit = "60771d12aee60e4ccb220548d8a485c3aa4183cf"
