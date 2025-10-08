@@ -86,7 +86,9 @@ Global settings affect all projects. Project-specific settings are recommended f
 
 Of course, Django templates aren't limited to HTML. You can use glob patterns to match templates of any file type.
 
-**For templates in your templates directory:**
+##### Directory-based matching
+
+Match multiple file types within your templates directory:
 
 ```json
 {
@@ -100,8 +102,9 @@ Of course, Django templates aren't limited to HTML. You can use glob patterns to
 }
 ```
 
-**Using the `.dj.*` convention:**
+##### Extension-based matching
 
+Use a `.dj.*` naming convention to mark Django templates:
 
 ```json
 {
@@ -111,7 +114,7 @@ Of course, Django templates aren't limited to HTML. You can use glob patterns to
 }
 ```
 
-This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj.md`) and gives you maximum flexibility to use Django templates with any file extension anywhere.
+This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj.md`), allowing you to use Django templates with any file extension anywhere in your project.
 
 ### Using an Alternative Language Server
 
