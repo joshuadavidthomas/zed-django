@@ -2,6 +2,23 @@
 
 A [Django](https://djangoproject.com) extension for [Zed](https://zed.dev).
 
+## Installation
+
+> [!NOTE]
+> The extension is currently awaiting approval for the official Zed extension store ([relevant PR](https://github.com/zed-industries/extensions/pull/3525)).
+>
+> In the meantime, you can install it as a dev extension:
+>
+> 1. Clone the [zed-django](https://github.com/joshuadavidthomas/zed-django) repository locally
+> 2. Open the Extensions panel (`zed: extensions` in the command palette or `ctrl-shift-x`/`cmd-shift-x`)
+> 3. Click "Install Dev Extension" in the upper right corner and select the cloned repo folder
+
+Install the extension from the Zed extensions directory:
+
+1. Open the Extensions panel (`zed: extensions` in the command palette or `ctrl-shift-x`/`cmd-shift-x`)
+2. Search for "Django"
+3. Click "Install"
+
 ## File Associations
 
 By default, this extension automatically detects:
