@@ -11,3 +11,14 @@ updates:
       cargo:
         patterns:
           - "*"
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      timezone: America/Chicago
+    labels:
+      - 🤖 dependabot
+    groups:
+      gha:
+        patterns:
+          - "*"
