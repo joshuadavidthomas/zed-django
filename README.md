@@ -19,25 +19,27 @@ Install the extension from the Zed extensions directory:
 2. Search for "Django"
 3. Click "Install"
 
-## File Associations
+## Usage
+
+### File Associations
 
 By default, this extension automatically detects:
 
 - Files with `.dj.html`, `.dj.md`, or `.dj.txt` extensions
 - Files starting with `{% extends` or `{% load`
 
-### Using Django syntax in `.html` files
+#### Using Django syntax in `.html` files
 
 Since `.html` files conflict with the built-in HTML extension, you'll need to manually configure file associations for your Django templates.
 
-#### Per-file (Quick)
+##### Per-file (Quick)
 
 Right-click on an `.html` file in Zed and select `Select Language` → `Django`, or click the language indicator in the status bar at the bottom right of the editor.
 
 > [!NOTE]
 > This only applies to the current session. The file will revert to HTML next time you open it.
 
-#### Django templates directory (Recommended)
+##### Django templates directory (Recommended)
 
 Add to your `.zed/settings.json` in your Django project:
 
@@ -51,7 +53,7 @@ Add to your `.zed/settings.json` in your Django project:
 
 This matches all `.html` files in any `templates` directory, following Django's standard project structure.
 
-#### All HTML files (use with caution)
+##### All HTML files (use with caution)
 
 To treat all `.html` files as Django templates:
 
@@ -66,7 +68,7 @@ To treat all `.html` files as Django templates:
 > [!NOTE]
 > This will override the built-in HTML language for all `.html` files and may affect non-Django HTML files.
 
-#### Global settings
+##### Global settings
 
 Add to your global Zed settings (`zed: open settings`):
 
@@ -80,7 +82,7 @@ Add to your global Zed settings (`zed: open settings`):
 
 Global settings affect all projects. Project-specific settings are recommended for now.
 
-### Using Django syntax in other file types
+#### Using Django syntax in other file types
 
 Of course, Django templates aren't limited to HTML. You can use glob patterns to match templates of any file type.
 
@@ -111,7 +113,7 @@ Of course, Django templates aren't limited to HTML. You can use glob patterns to
 
 This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj.md`) and gives you maximum flexibility to use Django templates with any file extension anywhere.
 
-## Using an Alternative Language Server
+### Using an Alternative Language Server
 
 By default, the extension uses [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) as its default language server. If you prefer to use a different language server, such as the [Django Template LSP server](https://github.com/fourdigits/django-template-lsp), you can disable the default server and configure your own in your Zed settings:
 
