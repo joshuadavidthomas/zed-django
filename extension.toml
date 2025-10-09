@@ -1,7 +1,7 @@
 id = "django"
 name = "Django"
 description = "Django support"
-version = "0.1.0"
+version = "0.1.1"
 schema_version = 1
 authors = ["Josh Thomas <josh@joshthomas.dev>"]
 repository = "https://github.com/joshuadavidthomas/zed-django"
