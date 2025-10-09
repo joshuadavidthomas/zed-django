@@ -75,7 +75,7 @@ impl ReleaseArtifact {
 
     fn base_name(&self) -> String {
         format!(
-            "{}-v{}-{}-{}",
+            "{}-{}-{}-{}",
             PACKAGE_NAME,
             self.version,
             self.os(),
@@ -90,6 +90,16 @@ impl ReleaseArtifact {
     fn binary_path(&self) -> String {
         format!("{}/{}", self.base_name(), BINARY_NAME)
     }
+}
+
+fn find_matching_asset<'a>(
+    assets: &'a [zed::GithubReleaseAsset],
+    artifact: &ReleaseArtifact,
+) -> Result<&'a zed::GithubReleaseAsset> {
+    assets
+        .iter()
+        .find(|asset| asset.name == artifact.asset_name())
+        .ok_or_else(|| format!("No asset found matching {}", artifact.asset_name()))
 }
 
 pub fn get_or_install_djls(
@@ -116,11 +126,7 @@ pub fn get_or_install_djls(
     let (platform, arch) = zed::current_platform();
     let artifact = ReleaseArtifact::new(platform, arch, release.version);
 
-    let asset = release
-        .assets
-        .iter()
-        .find(|asset| asset.name == artifact.asset_name())
-        .ok_or_else(|| format!("No asset found matching {}", artifact.asset_name()))?;
+    let asset = find_matching_asset(&release.assets, &artifact)?;
 
     let binary_path = artifact.binary_path();
 
@@ -144,4 +150,210 @@ pub fn get_or_install_djls(
     );
 
     Ok(PathBuf::from(binary_path))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_base_name_all_platforms() {
+        let test_cases = [
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-darwin-arm64",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v5.2.3-darwin-x64",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-linux-arm64",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v5.2.3-linux-x64",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-windows-arm64",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v5.2.3-windows-x64",
+            ),
+        ];
+
+        for (os, arch, expected) in test_cases {
+            let artifact = ReleaseArtifact {
+                os,
+                arch,
+                version: "v5.2.3".to_string(),
+            };
+            assert_eq!(artifact.base_name(), expected);
+        }
+    }
+
+    #[test]
+    fn test_asset_name_all_platforms() {
+        let test_cases = [
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-darwin-arm64.tar.gz",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v5.2.3-darwin-x64.tar.gz",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-linux-arm64.tar.gz",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v5.2.3-linux-x64.tar.gz",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-windows-arm64.zip",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v5.2.3-windows-x64.zip",
+            ),
+        ];
+
+        for (os, arch, expected) in test_cases {
+            let artifact = ReleaseArtifact {
+                os,
+                arch,
+                version: "v5.2.3".to_string(),
+            };
+            assert_eq!(artifact.asset_name(), expected);
+        }
+    }
+
+    #[test]
+    fn test_binary_path_all_platforms() {
+        let test_cases = [
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-darwin-arm64/djls",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v1.0.0-darwin-x64/djls",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-linux-arm64/djls",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v1.0.0-linux-x64/djls",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-windows-arm64/djls",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v1.0.0-windows-x64/djls",
+            ),
+        ];
+
+        for (os, arch, expected) in test_cases {
+            let artifact = ReleaseArtifact {
+                os,
+                arch,
+                version: "v1.0.0".to_string(),
+            };
+            assert_eq!(artifact.binary_path(), expected);
+        }
+    }
+
+    #[test]
+    fn test_find_matching_asset_success() {
+        let assets = vec![
+            zed::GithubReleaseAsset {
+                name: "django-language-server-v1.0.0-linux-x64.tar.gz".to_string(),
+                download_url: "https://example.com/linux".to_string(),
+            },
+            zed::GithubReleaseAsset {
+                name: "django-language-server-v1.0.0-darwin-arm64.tar.gz".to_string(),
+                download_url: "https://example.com/darwin".to_string(),
+            },
+        ];
+
+        let artifact = ReleaseArtifact {
+            os: Os::Darwin,
+            arch: Arch::Arm64,
+            version: "v1.0.0".to_string(),
+        };
+
+        let result = find_matching_asset(&assets, &artifact);
+        assert!(result.is_ok());
+        assert_eq!(
+            result.unwrap().name,
+            "django-language-server-v1.0.0-darwin-arm64.tar.gz"
+        );
+    }
+
+    #[test]
+    fn test_find_matching_asset_not_found() {
+        let assets = vec![zed::GithubReleaseAsset {
+            name: "django-language-server-v1.0.0-linux-x64.tar.gz".to_string(),
+            download_url: "https://example.com/linux".to_string(),
+        }];
+
+        let artifact = ReleaseArtifact {
+            os: Os::Darwin,
+            arch: Arch::Arm64,
+            version: "v1.0.0".to_string(),
+        };
+
+        let result = find_matching_asset(&assets, &artifact);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            "No asset found matching django-language-server-v1.0.0-darwin-arm64.tar.gz"
+        );
+    }
+
+    #[test]
+    fn test_find_matching_asset_empty_list() {
+        let assets = vec![];
+
+        let artifact = ReleaseArtifact {
+            os: Os::Linux,
+            arch: Arch::X64,
+            version: "v1.0.0".to_string(),
+        };
+
+        let result = find_matching_asset(&assets, &artifact);
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            "No asset found matching django-language-server-v1.0.0-linux-x64.tar.gz"
+        );
+    }
 }
