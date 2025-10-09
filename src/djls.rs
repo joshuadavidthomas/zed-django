@@ -159,12 +159,36 @@ mod tests {
     #[test]
     fn test_base_name_all_platforms() {
         let test_cases = [
-            (Os::Darwin, Arch::Arm64, "django-language-server-v5.2.3-darwin-arm64"),
-            (Os::Darwin, Arch::X64, "django-language-server-v5.2.3-darwin-x64"),
-            (Os::Linux, Arch::Arm64, "django-language-server-v5.2.3-linux-arm64"),
-            (Os::Linux, Arch::X64, "django-language-server-v5.2.3-linux-x64"),
-            (Os::Windows, Arch::Arm64, "django-language-server-v5.2.3-windows-arm64"),
-            (Os::Windows, Arch::X64, "django-language-server-v5.2.3-windows-x64"),
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-darwin-arm64",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v5.2.3-darwin-x64",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-linux-arm64",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v5.2.3-linux-x64",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-windows-arm64",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v5.2.3-windows-x64",
+            ),
         ];
 
         for (os, arch, expected) in test_cases {
@@ -180,12 +204,36 @@ mod tests {
     #[test]
     fn test_asset_name_all_platforms() {
         let test_cases = [
-            (Os::Darwin, Arch::Arm64, "django-language-server-v5.2.3-darwin-arm64.tar.gz"),
-            (Os::Darwin, Arch::X64, "django-language-server-v5.2.3-darwin-x64.tar.gz"),
-            (Os::Linux, Arch::Arm64, "django-language-server-v5.2.3-linux-arm64.tar.gz"),
-            (Os::Linux, Arch::X64, "django-language-server-v5.2.3-linux-x64.tar.gz"),
-            (Os::Windows, Arch::Arm64, "django-language-server-v5.2.3-windows-arm64.zip"),
-            (Os::Windows, Arch::X64, "django-language-server-v5.2.3-windows-x64.zip"),
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-darwin-arm64.tar.gz",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v5.2.3-darwin-x64.tar.gz",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-linux-arm64.tar.gz",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v5.2.3-linux-x64.tar.gz",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v5.2.3-windows-arm64.zip",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v5.2.3-windows-x64.zip",
+            ),
         ];
 
         for (os, arch, expected) in test_cases {
@@ -201,12 +249,36 @@ mod tests {
     #[test]
     fn test_binary_path_all_platforms() {
         let test_cases = [
-            (Os::Darwin, Arch::Arm64, "django-language-server-v1.0.0-darwin-arm64/djls"),
-            (Os::Darwin, Arch::X64, "django-language-server-v1.0.0-darwin-x64/djls"),
-            (Os::Linux, Arch::Arm64, "django-language-server-v1.0.0-linux-arm64/djls"),
-            (Os::Linux, Arch::X64, "django-language-server-v1.0.0-linux-x64/djls"),
-            (Os::Windows, Arch::Arm64, "django-language-server-v1.0.0-windows-arm64/djls"),
-            (Os::Windows, Arch::X64, "django-language-server-v1.0.0-windows-x64/djls"),
+            (
+                Os::Darwin,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-darwin-arm64/djls",
+            ),
+            (
+                Os::Darwin,
+                Arch::X64,
+                "django-language-server-v1.0.0-darwin-x64/djls",
+            ),
+            (
+                Os::Linux,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-linux-arm64/djls",
+            ),
+            (
+                Os::Linux,
+                Arch::X64,
+                "django-language-server-v1.0.0-linux-x64/djls",
+            ),
+            (
+                Os::Windows,
+                Arch::Arm64,
+                "django-language-server-v1.0.0-windows-arm64/djls",
+            ),
+            (
+                Os::Windows,
+                Arch::X64,
+                "django-language-server-v1.0.0-windows-x64/djls",
+            ),
         ];
 
         for (os, arch, expected) in test_cases {
