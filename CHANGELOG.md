@@ -18,6 +18,10 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed duplicate version prefix in language server asset names that prevented download on first installation
+
 ## [0.1.0]
 
 ### Added
