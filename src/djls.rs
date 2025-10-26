@@ -135,12 +135,8 @@ pub fn get_or_install_djls(
         &zed::LanguageServerInstallationStatus::Downloading,
     );
 
-    zed::download_file(
-        &asset.download_url,
-        &binary_path,
-        artifact.download_file_type(),
-    )
-    .map_err(|e| format!("Failed to download djls: {e}"))?;
+    zed::download_file(&asset.download_url, "", artifact.download_file_type())
+        .map_err(|e| format!("Failed to download djls: {e}"))?;
 
     zed::make_file_executable(&binary_path)?;
 
