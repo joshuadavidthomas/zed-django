@@ -20,6 +20,12 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ### Fixed
 
+- Fixed path duplication issue when downloading language server binary that caused "Permission denied" errors
+
+## [0.1.1]
+
+### Fixed
+
 - Fixed duplicate version prefix in language server asset names that prevented download on first installation
 
 ## [0.1.0]
@@ -40,5 +46,6 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 - Josh Thomas <josh@joshthomas.dev> (maintainer)
 
-[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.1.1...HEAD
 [0.1.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.0
+[0.1.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.1

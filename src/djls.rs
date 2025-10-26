@@ -137,7 +137,7 @@ pub fn get_or_install_djls(
 
     zed::download_file(
         &asset.download_url,
-        &binary_path,
+        "",
         artifact.download_file_type(),
     )
     .map_err(|e| format!("Failed to download djls: {e}"))?;
