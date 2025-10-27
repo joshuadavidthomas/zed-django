@@ -18,6 +18,40 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Added
+
+- Baked-in support for Django Template LSP as an alternative language server
+- Support for language server initialization options via user settings
+
+### Changed
+
+- **BREAKING**: Language server ID for Django Language Server changed from `djls` to `django-language-server`
+- Refactored to support multiple language servers (both start by default, can be configured via settings)
+
+#### Migration Guide
+
+If you have custom LSP settings for Django Language Server, update the language server ID:
+
+**Old**
+
+```json
+{
+  "lsp": {
+    "djls": { "settings": { ... } }
+  }
+}
+```
+
+**New**
+
+```json
+{
+  "lsp": {
+    "django-language-server": { "settings": { ... } }
+  }
+}
+```
+
 ## [0.1.2]
 
 ### Fixed

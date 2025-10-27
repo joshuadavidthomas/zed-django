@@ -1,8 +1,8 @@
-mod djls;
+mod language_servers;
 
-use std::fs;
-use std::path::PathBuf;
-
+use language_servers::DjangoLanguageServer;
+use language_servers::DjangoTemplateLsp;
+use language_servers::LanguageServer;
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
@@ -10,13 +10,15 @@ use zed_extension_api::{
     self as zed,
 };
 
+#[derive(Default)]
 struct DjangoExtension {
-    djls_path: Option<PathBuf>,
+    django_language_server: Option<DjangoLanguageServer>,
+    django_template_lsp: Option<DjangoTemplateLsp>,
 }
 
 impl zed::Extension for DjangoExtension {
     fn new() -> Self {
-        Self { djls_path: None }
+        Self::default()
     }
 
     fn language_server_command(
@@ -24,28 +26,48 @@ impl zed::Extension for DjangoExtension {
         language_server_id: &LanguageServerId,
         worktree: &Worktree,
     ) -> Result<zed::Command> {
-        let needs_refresh = self
-            .djls_path
-            .as_ref()
-            .is_none_or(|path| fs::metadata(path).is_err());
-
-        if needs_refresh {
-            let path = djls::get_or_install_djls(language_server_id, worktree)?;
-            self.djls_path = Some(path);
+        match language_server_id.as_ref() {
+            DjangoLanguageServer::SERVER_ID => {
+                let server = self
+                    .django_language_server
+                    .get_or_insert_with(DjangoLanguageServer::new);
+                server.language_server_command(language_server_id, worktree)
+            }
+            DjangoTemplateLsp::SERVER_ID => {
+                let server = self
+                    .django_template_lsp
+                    .get_or_insert_with(DjangoTemplateLsp::new);
+                server.language_server_command(language_server_id, worktree)
+            }
+            language_server_id => Err(format!("unknown language server: {language_server_id}")),
         }
+    }
 
-        let binary_path = self
-            .djls_path
-            .as_ref()
-            .unwrap()
-            .to_string_lossy()
-            .to_string();
-
-        Ok(zed::Command {
-            command: binary_path,
-            args: vec!["serve".to_string()],
-            env: Vec::default(),
-        })
+    fn language_server_initialization_options(
+        &mut self,
+        language_server_id: &LanguageServerId,
+        worktree: &Worktree,
+    ) -> Result<Option<zed::serde_json::Value>> {
+        match language_server_id.as_ref() {
+            DjangoLanguageServer::SERVER_ID => {
+                let server = self
+                    .django_language_server
+                    .get_or_insert_with(DjangoLanguageServer::new);
+                server.language_server_initialization_options(language_server_id, worktree)
+            }
+            DjangoTemplateLsp::SERVER_ID => {
+                let server = self
+                    .django_template_lsp
+                    .get_or_insert_with(DjangoTemplateLsp::new);
+                server.language_server_initialization_options(language_server_id, worktree)
+            }
+            _ => Ok(Some(
+                zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+                    .ok()
+                    .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
+                    .unwrap_or_default(),
+            )),
+        }
     }
 }
 
