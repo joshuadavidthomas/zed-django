@@ -20,48 +20,36 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ### Added
 
-- Support for multiple language servers (Django Language Server and Django Template LSP)
-- Modular language server architecture with trait-based design
-- Comprehensive documentation for switching between language servers
-- Zero-install support for `django-template-lsp` via `uvx --from django-template-lsp djlsp` (ephemeral execution)
-- Simplified installation strategy: prefers `uvx` → checks for existing `djlsp` installation → helpful error message
-- No automatic installation - users either have `uv` (recommended) or manually install `djlsp`
-- With `uv` installed, `django-template-lsp` works immediately with no setup required
+- Baked-in support for Django Template LSP as an alternative language server
 
 ### Changed
 
-- **BREAKING**: Language server ID changed from `djls` to `django-language-server`
-- Refactored extension to support multiple language servers simultaneously
-- Updated README with detailed language server comparison and configuration instructions
-- Users can now choose between `django-language-server` (default, auto-installs) and `django-template-lsp` (manual install, more features)
+- **BREAKING**: Language server ID for Django Language Server changed from `djls` to `django-language-server`
+- Refactored to support multiple language servers (both start by default, can be configured via settings)
 
-### Migration Guide
+#### Migration Guide
 
-The language server ID has changed from `djls` to `django-language-server`. If you have custom LSP settings:
+If you have custom LSP settings for Django Language Server, update the language server ID:
 
-**Old configuration:**
+**Old**
+
 ```json
 {
   "lsp": {
-    "djls": {
-      "settings": { ... }
-    }
+    "djls": { "settings": { ... } }
   }
 }
 ```
 
-**New configuration:**
+**New**
+
 ```json
 {
   "lsp": {
-    "django-language-server": {
-      "settings": { ... }
-    }
+    "django-language-server": { "settings": { ... } }
   }
 }
 ```
-
-If you were using the default configuration with no custom settings, no changes are required.
 
 ## [0.1.2]
 
