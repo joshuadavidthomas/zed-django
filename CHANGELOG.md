@@ -21,6 +21,7 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 ### Added
 
 - Baked-in support for Django Template LSP as an alternative language server
+- Support for language server initialization options via user settings
 
 ### Changed
 

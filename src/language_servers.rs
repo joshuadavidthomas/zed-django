@@ -6,9 +6,7 @@ pub use django_template_lsp::DjangoTemplateLsp;
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
-use zed_extension_api::{
-    self as zed,
-};
+use zed_extension_api::{self as zed};
 
 pub trait LanguageServer {
     const EXECUTABLE_NAME: &str;
@@ -50,5 +48,18 @@ pub trait LanguageServer {
         let command = self.get_command_fallback(language_server_id, worktree)?;
         self.set_command(command.clone());
         Ok(command)
+    }
+
+    fn language_server_initialization_options(
+        &self,
+        language_server_id: &LanguageServerId,
+        worktree: &Worktree,
+    ) -> Result<Option<zed::serde_json::Value>> {
+        Ok(Some(
+            zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+                .ok()
+                .and_then(|lsp_settings| lsp_settings.initialization_options.clone())
+                .unwrap_or_default(),
+        ))
     }
 }
