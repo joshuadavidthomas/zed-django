@@ -117,8 +117,6 @@ There are two language servers available for Django templates:
 - [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
 - [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
 
-Both provide autocompletion and other LSP features for Django templates, but with different feature sets. You should choose one based on your needs. Note that you typically should not use both simultaneously.
-
 ### Feature Comparison
 
 | Feature | Django Language Server | Django Template LSP |
