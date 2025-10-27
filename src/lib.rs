@@ -5,7 +5,9 @@ use std::collections::HashMap;
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
-use zed_extension_api::{self as zed};
+use zed_extension_api::{
+    self as zed,
+};
 
 use crate::language_servers::LanguageServerInstance;
 
