@@ -16,7 +16,7 @@ jobs:
     environment: release
     steps:
       - name: Publish to Zed extensions repo
-        uses: huacnlee/zed-extension-action@6a168731f1d994905eeb552b3b42b0cb6c4d12e6 # v1.0.0
+        uses: huacnlee/zed-extension-action@4e2e500ba7bcc8b4147b092e2f5a597fef267e70
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
         with:
