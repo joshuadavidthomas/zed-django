@@ -26,7 +26,7 @@ By default, this extension automatically detects:
 
 Since `.html` files conflict with the built-in HTML extension, you'll need to manually configure file associations for your Django templates.
 
-#### Per-file (Quick)
+#### Per-file
 
 Right-click on an `.html` file in Zed and select `Select Language` → `Django`, or click the language indicator in the status bar at the bottom right of the editor.
 
