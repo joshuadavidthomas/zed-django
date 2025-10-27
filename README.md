@@ -107,26 +107,58 @@ Use a `.dj.*` naming convention to mark Django templates:
 
 This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj.md`), allowing you to use Django templates with any file extension anywhere in your project.
 
-### Using an Alternative Language Server
+## Language Servers
 
-By default, the extension uses [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) as its default language server. If you prefer to use a different language server, such as the [Django Template LSP server](https://github.com/fourdigits/django-template-lsp), you can disable the default server and configure your own in your Zed settings:
+There are two language servers available for Django templates. The extension supports both:
+
+- [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
+- [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
+
+Both provide autocompletion and other LSP features for Django templates, but with different feature sets. You should choose one based on your needs. Note that you typically should not use both simultaneously.
+
+**Django Language Server** is enabled by default. To switch to **Django Template LSP**, see the [Configuration](#configuration) section.
+
+### Feature Comparison
+
+| Feature | Django Language Server | Django Template LSP |
+|---------|----------------------|---------------------|
+| Diagnostics | ✅ | ❌ |
+| Completions | ✅ (template tags) | ✅ (tags, filters, templates, load, static, URLs) |
+| Go to definition | ✅ (extend/include tags) | ✅ (templates, URLs, tags/filters, context) |
+| Find references | ✅ (extend/include tags) | ❌ |
+| Hover documentation | ❌ | ✅ (tags, filters, URLs) |
+
+### Installation
+
+Both language servers check if their binary (`djls` or `djlsp`) is on your PATH first.
+
+If not found on PATH:
+
+- Django Language Server automatically downloads and installs from GitHub releases
+- Django Template LSP runs via `uvx --from django-template-lsp djlsp` if `uv` is available. See the [fourdigits/django-template-lsp repository](https://github.com/fourdigits/django-template-lsp) for installation instructions.
+
+### Configuration
+
+Django Language Server is enabled by default and requires no configuration.
+
+To switch to Django Template LSP, add the following to your `settings.json`:
 
 ```json
 {
-  "lsp": {
-    "django-language-server": {
-      "enabled": false
-    },
-    "django-template-lsp": {
-      "binary": {
-        "path": "/path/to/django-template-lsp",
-        "arguments": []
-      },
-      "languages": ["Django"]
+  "languages": {
+    "Django": {
+      "language_servers": ["django-template-lsp", "!django-language-server", "..."]
     }
   }
 }
 ```
+
+For project-specific configuration, create `.zed/settings.json` in your Django project root.
+
+For detailed documentation and advanced configuration, see their respective repositories:
+
+- [joshuadavidthomas/django-language-server](https://github.com/joshuadavidthomas/django-language-server)
+- [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp)
 
 ## Development
 

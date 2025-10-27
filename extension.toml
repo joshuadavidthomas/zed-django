@@ -6,8 +6,12 @@ schema_version = 1
 authors = ["Josh Thomas <josh@joshthomas.dev>"]
 repository = "https://github.com/joshuadavidthomas/zed-django"
 
-[language_servers.djls]
+[language_servers.django-language-server]
 name = "Django Language Server"
+languages = ["Django"]
+
+[language_servers.django-template-lsp]
+name = "Django Template LSP"
 languages = ["Django"]
 
 [grammars.htmldjango]
