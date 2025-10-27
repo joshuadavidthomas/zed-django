@@ -2,9 +2,7 @@ use std::path::PathBuf;
 
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
-use zed_extension_api::{
-    self as zed,
-};
+use zed_extension_api::{self as zed};
 
 const GITHUB_REPO: &str = "joshuadavidthomas/django-language-server";
 const BINARY_NAME: &str = "djls";
@@ -37,7 +35,10 @@ impl ReleaseArtifact {
     }
 
     fn download(&self) -> Result<()> {
-        let (extension, file_type) = self.archive_info();
+        let (extension, file_type) = match self.os {
+            zed::Os::Windows => ("zip", zed::DownloadedFileType::Zip),
+            _ => ("tar.gz", zed::DownloadedFileType::GzipTar),
+        };
         let asset_name = format!("{}.{}", self.base_name(), extension);
         let download_url = self
             .release
@@ -49,13 +50,6 @@ impl ReleaseArtifact {
         zed::download_file(&download_url?, "", file_type)
             .map_err(|e| format!("Failed to download djls: {e}"))?;
         Ok(())
-    }
-
-    fn archive_info(&self) -> (&'static str, zed::DownloadedFileType) {
-        match self.os {
-            zed::Os::Windows => ("zip", zed::DownloadedFileType::Zip),
-            _ => ("tar.gz", zed::DownloadedFileType::GzipTar),
-        }
     }
 
     fn base_name(&self) -> String {
