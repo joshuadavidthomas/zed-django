@@ -10,40 +10,6 @@ use zed_extension_api::{
     self as zed,
 };
 
-pub enum LanguageServerInstance {
-    DjangoLanguageServer(DjangoLanguageServer),
-    DjangoTemplateLsp(DjangoTemplateLsp),
-}
-
-impl LanguageServerInstance {
-    pub fn language_server_command(
-        &mut self,
-        language_server_id: &LanguageServerId,
-        worktree: &Worktree,
-    ) -> Result<zed::Command> {
-        match self {
-            LanguageServerInstance::DjangoLanguageServer(s) => {
-                s.language_server_command(language_server_id, worktree)
-            }
-            LanguageServerInstance::DjangoTemplateLsp(s) => {
-                s.language_server_command(language_server_id, worktree)
-            }
-        }
-    }
-
-    pub fn from_id(id: &str) -> Result<Self> {
-        match id {
-            DjangoLanguageServer::SERVER_ID => Ok(LanguageServerInstance::DjangoLanguageServer(
-                DjangoLanguageServer::new(),
-            )),
-            DjangoTemplateLsp::SERVER_ID => Ok(LanguageServerInstance::DjangoTemplateLsp(
-                DjangoTemplateLsp::new(),
-            )),
-            _ => Err(format!("unknown language server: {id}")),
-        }
-    }
-}
-
 pub trait LanguageServer {
     const EXECUTABLE_NAME: &str;
     const GITHUB_REPO: &str;

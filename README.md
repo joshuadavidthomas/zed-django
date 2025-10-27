@@ -131,7 +131,9 @@ Both provide autocompletion and other LSP features for Django templates, but wit
 
 ### Installation and Activation
 
-Both language servers follow the same activation sequence:
+The Django extension provides two language servers for Django templates. **Both language servers will start by default and run simultaneously.** You can choose to use only one by configuring which to disable in your settings (see the [Using a Language Server](#using-a-language-server) section below).
+
+Both language servers follow the same installation and activation sequence:
 
 1. The Django extension checks if the language server binary (`djls` or `djlsp`) is available on your PATH.
 2. If not found on PATH:
@@ -146,7 +148,17 @@ For manual installation of Django Template LSP, see the [fourdigits/django-templ
 
 [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) is the default language server for Django templates in Zed. It provides diagnostics, autocompletion for template tags, and navigation features for template inheritance.
 
-Django Language Server is enabled by default and requires no configuration. It will work out of the box for most Django projects.
+To use only Django Language Server (disabling Django Template LSP), add the following to your `settings.json`:
+
+```json [settings]
+{
+  "languages": {
+    "Django": {
+      "language_servers": ["django-language-server", "!django-template-lsp"]
+    }
+  }
+}
+```
 
 For detailed documentation and advanced configuration options, see the [joshuadavidthomas/django-language-server](https://github.com/joshuadavidthomas/django-language-server) repository.
 
@@ -154,7 +166,7 @@ For detailed documentation and advanced configuration options, see the [joshuada
 
 [Django Template LSP](https://github.com/fourdigits/django-template-lsp) provides comprehensive autocompletion for tags, filters, templates, URLs, and more, along with hover documentation.
 
-To switch to Django Template LSP, add the following to your `settings.json`:
+To use only Django Template LSP (disabling Django Language Server), add the following to your `settings.json`:
 
 ```json [settings]
 {
@@ -170,7 +182,7 @@ For project-specific configuration, create `.zed/settings.json` in your Django p
 
 For detailed documentation and advanced configuration options, see the [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp) repository.
 
-### Disabling Language Servers
+#### Disabling Language Servers
 
 If you prefer to use only the tree-sitter syntax highlighting without any language server features, you can disable both language servers:
 
