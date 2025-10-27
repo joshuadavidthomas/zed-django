@@ -154,7 +154,7 @@ To use only Django Language Server (disabling Django Template LSP), add the foll
 {
   "languages": {
     "Django": {
-      "language_servers": ["django-language-server", "!django-template-lsp"]
+      "language_servers": ["django-language-server", "!django-template-lsp", "..."]
     }
   }
 }
@@ -172,7 +172,7 @@ To use only Django Template LSP (disabling Django Language Server), add the foll
 {
   "languages": {
     "Django": {
-      "language_servers": ["django-template-lsp", "!django-language-server"]
+      "language_servers": ["django-template-lsp", "!django-language-server", "..."]
     }
   }
 }
@@ -190,7 +190,7 @@ If you prefer to use only the tree-sitter syntax highlighting without any langua
 {
   "languages": {
     "Django": {
-      "language_servers": ["!django-language-server", "!django-template-lsp"]
+      "language_servers": ["!django-language-server", "!django-template-lsp", "..."]
     }
   }
 }
