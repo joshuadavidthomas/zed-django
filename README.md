@@ -2,6 +2,11 @@
 
 A [Django](https://djangoproject.com) extension for [Zed](https://zed.dev).
 
+- Tree-sitter: [tree-sitter-htmldjango](https://github.com/joshuadavidthomas/tree-sitter-htmldjango)
+- Language Servers:
+  - [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
+  - [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
+
 ## Installation
 
 Install the extension from the Zed extensions directory:
@@ -10,31 +15,29 @@ Install the extension from the Zed extensions directory:
 2. Search for "Django"
 3. Click "Install"
 
-## Usage
-
-### File Associations
+## File Associations
 
 By default, this extension automatically detects:
 
 - Files with `.dj.html`, `.dj.md`, or `.dj.txt` extensions
 - Files starting with `{% extends` or `{% load`
 
-#### Using Django syntax in `.html` files
+### Using Django syntax in `.html` files
 
 Since `.html` files conflict with the built-in HTML extension, you'll need to manually configure file associations for your Django templates.
 
-##### Per-file (Quick)
+#### Per-file (Quick)
 
 Right-click on an `.html` file in Zed and select `Select Language` → `Django`, or click the language indicator in the status bar at the bottom right of the editor.
 
 > [!NOTE]
 > This only applies to the current session. The file will revert to HTML next time you open it.
 
-##### Django templates directory (Recommended)
+#### Django templates directory (Recommended)
 
 Add to your `.zed/settings.json` in your Django project:
 
-```json
+```json [settings]
 {
   "file_types": {
     "Django": ["**/templates/**/*.html"]
@@ -44,11 +47,11 @@ Add to your `.zed/settings.json` in your Django project:
 
 This matches all `.html` files in any `templates` directory, following Django's standard project structure.
 
-##### All HTML files (use with caution)
+#### All HTML files
 
 To treat all `.html` files as Django templates:
 
-```json
+```json [settings]
 {
   "file_types": {
     "Django": ["html"]
@@ -59,11 +62,11 @@ To treat all `.html` files as Django templates:
 > [!NOTE]
 > This will override the built-in HTML language for all `.html` files and may affect non-Django HTML files.
 
-##### Global settings
+#### Global settings
 
 Add to your global Zed settings (`zed: open settings`):
 
-```json
+```json [settings]
 {
   "file_types": {
     "Django": ["**/templates/**/*.html"]
@@ -73,15 +76,15 @@ Add to your global Zed settings (`zed: open settings`):
 
 Global settings affect all projects. Project-specific settings are recommended for now.
 
-#### Using Django syntax in other file types
+### Using Django syntax in other file types
 
 Of course, Django templates aren't limited to HTML. You can use glob patterns to match templates of any file type.
 
-##### Directory-based matching
+#### Directory-based matching
 
 Match multiple file types within your templates directory:
 
-```json
+```json [settings]
 {
   "file_types": {
     "Django": [
@@ -93,11 +96,11 @@ Match multiple file types within your templates directory:
 }
 ```
 
-##### Extension-based matching
+#### Extension-based matching
 
 Use a `.dj.*` naming convention to mark Django templates:
 
-```json
+```json [settings]
 {
   "file_types": {
     "Django": ["*.dj.*"]
@@ -109,14 +112,25 @@ This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj
 
 ## Language Servers
 
-There are two language servers available for Django templates. The extension supports both:
+There are two language servers available for Django templates:
 
 - [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
 - [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
 
 Both provide autocompletion and other LSP features for Django templates, but with different feature sets. You should choose one based on your needs. Note that you typically should not use both simultaneously.
 
-**Django Language Server** is enabled by default. To switch to **Django Template LSP**, see the [Configuration](#configuration) section.
+## Configuring a Language Server
+
+### Language Server Activation
+
+Both language servers follow the same activation sequence:
+
+1. The Django extension checks if the language server binary (`djls` or `djlsp`) is available on your PATH.
+2. If not found on PATH:
+   - **Django Language Server** automatically downloads and installs from GitHub releases
+   - **Django Template LSP** runs via `uvx --from django-template-lsp djlsp` if `uv` is available
+
+For manual installation of Django Template LSP, see the [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp) repository.
 
 ### Feature Comparison
 
@@ -128,37 +142,53 @@ Both provide autocompletion and other LSP features for Django templates, but wit
 | Find references | ✅ (extend/include tags) | ❌ |
 | Hover documentation | ❌ | ✅ (tags, filters, URLs) |
 
-### Installation
+### Using Django Language Server
 
-Both language servers check if their binary (`djls` or `djlsp`) is on your PATH first.
+Django Language Server is enabled by default and requires no configuration. It will work out of the box for most Django projects.
 
-If not found on PATH:
-
-- Django Language Server automatically downloads and installs from GitHub releases
-- Django Template LSP runs via `uvx --from django-template-lsp djlsp` if `uv` is available. See the [fourdigits/django-template-lsp repository](https://github.com/fourdigits/django-template-lsp) for installation instructions.
-
-### Configuration
-
-Django Language Server is enabled by default and requires no configuration.
+### Using Django Template LSP
 
 To switch to Django Template LSP, add the following to your `settings.json`:
 
-```json
+```json [settings]
 {
   "languages": {
     "Django": {
-      "language_servers": ["django-template-lsp", "!django-language-server", "..."]
+      "language_servers": ["django-template-lsp", "!django-language-server"]
     }
   }
 }
 ```
 
+### Disabling Language Servers
+
+If you prefer to use only the tree-sitter syntax highlighting without any language server features, you can disable both language servers:
+
+```json [settings]
+{
+  "languages": {
+    "Django": {
+      "language_servers": ["!django-language-server", "!django-template-lsp"]
+    }
+  }
+}
+```
+
+This gives you Django template syntax support, highlighting, and indentation through tree-sitter-htmldjango, without the additional language server features like diagnostics, autocompletion, or navigation.
+
+## Setting up Django Language Server
+
+[Django Language Server](https://github.com/joshuadavidthomas/django-language-server) is the default language server for Django templates in Zed. It provides diagnostics, autocompletion for template tags, and navigation features for template inheritance.
+
+For detailed documentation and advanced configuration options, see the [joshuadavidthomas/django-language-server](https://github.com/joshuadavidthomas/django-language-server) repository.
+
+## Setting up Django Template LSP
+
+[Django Template LSP](https://github.com/fourdigits/django-template-lsp) provides comprehensive autocompletion for tags, filters, templates, URLs, and more, along with hover documentation.
+
 For project-specific configuration, create `.zed/settings.json` in your Django project root.
 
-For detailed documentation and advanced configuration, see their respective repositories:
-
-- [joshuadavidthomas/django-language-server](https://github.com/joshuadavidthomas/django-language-server)
-- [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp)
+For detailed documentation and advanced configuration options, see the [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp) repository.
 
 ## Development
 
