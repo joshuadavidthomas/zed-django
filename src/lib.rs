@@ -1,7 +1,14 @@
 mod language_servers;
 
-use language_servers::{DjangoLanguageServer, DjangoTemplateLsp, LanguageServer};
-use zed_extension_api::{self as zed, LanguageServerId, Result, Worktree};
+use language_servers::DjangoLanguageServer;
+use language_servers::DjangoTemplateLsp;
+use language_servers::LanguageServer;
+use zed_extension_api::LanguageServerId;
+use zed_extension_api::Result;
+use zed_extension_api::Worktree;
+use zed_extension_api::{
+    self as zed,
+};
 
 #[derive(Default)]
 struct DjangoExtension {
