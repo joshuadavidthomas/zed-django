@@ -144,7 +144,7 @@ For manual installation of Django Template LSP, see the [fourdigits/django-templ
 
 #### Using Django Language Server
 
-[Django Language Server](https://github.com/joshuadavidthomas/django-language-server) is the default language server for Django templates in Zed. It provides diagnostics, autocompletion for template tags, and navigation features for template inheritance.
+[Django Language Server](https://github.com/joshuadavidthomas/django-language-server) provides diagnostics, autocompletion for template tags, and navigation features for template inheritance.
 
 To use only Django Language Server (disabling Django Template LSP), add the following to your `settings.json`:
 
