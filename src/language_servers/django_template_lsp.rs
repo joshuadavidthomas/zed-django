@@ -25,12 +25,10 @@ impl LanguageServer for DjangoTemplateLsp {
         _language_server_id: &LanguageServerId,
         worktree: &Worktree,
     ) -> Result<zed::Command> {
-        // Return cached command if available
         if let Some(ref command) = self.cached_command {
             return Ok(command.clone());
         }
 
-        // Check if already installed locally
         if let Some(binary_path) = worktree.which(BINARY_NAME) {
             let command = zed::Command {
                 command: binary_path,
@@ -41,7 +39,6 @@ impl LanguageServer for DjangoTemplateLsp {
             return Ok(command);
         }
 
-        // Check if uv is available - use uvx (ephemeral, no install needed)
         if let Some(uvx_path) = worktree.which("uvx") {
             let command = zed::Command {
                 command: uvx_path,
@@ -56,10 +53,8 @@ impl LanguageServer for DjangoTemplateLsp {
             return Ok(command);
         }
 
-        // Neither djlsp nor uvx found - provide helpful error
         Err(format!(
-            "{} not found. Install uv (recommended): https://docs.astral.sh/uv/getting-started/installation/ or manually install {}: pip install {}",
-            BINARY_NAME, PACKAGE_NAME, PACKAGE_NAME
+            "{BINARY_NAME} not found. Install uv (recommended): https://docs.astral.sh/uv/getting-started/installation/ or manually install {PACKAGE_NAME}: pip install {PACKAGE_NAME}",
         ))
     }
 }

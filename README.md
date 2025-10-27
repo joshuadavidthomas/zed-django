@@ -17,7 +17,7 @@ Install the extension from the Zed extensions directory:
 
 ## Django Template Language Syntax
 
-By default, this extension automatically detects:
+By default, this extension automatically detects and enables syntax support for the Django Template Language via Tree-sitter in:
 
 - Files with `.dj.html`, `.dj.md`, or `.dj.txt` extensions
 - Files starting with `{% extends` or `{% load`

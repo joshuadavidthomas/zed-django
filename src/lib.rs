@@ -1,4 +1,3 @@
-mod djls;
 mod language_servers;
 
 use language_servers::{DjangoLanguageServer, DjangoTemplateLsp, LanguageServer};
