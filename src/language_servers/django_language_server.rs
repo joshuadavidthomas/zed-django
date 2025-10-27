@@ -1,7 +1,12 @@
 use std::fs;
 use std::path::PathBuf;
 
-use zed_extension_api::{self as zed, LanguageServerId, Result, Worktree};
+use zed_extension_api::LanguageServerId;
+use zed_extension_api::Result;
+use zed_extension_api::Worktree;
+use zed_extension_api::{
+    self as zed,
+};
 
 use super::LanguageServer;
 
