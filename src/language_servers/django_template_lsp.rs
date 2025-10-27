@@ -1,65 +1,55 @@
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
-use zed_extension_api::{
-    self as zed,
-};
+use zed_extension_api::{self as zed};
 
 use super::LanguageServer;
 
-const BINARY_NAME: &str = "djlsp";
-const PACKAGE_NAME: &str = "django-template-lsp";
-
 pub struct DjangoTemplateLsp {
-    cached_command: Option<zed::Command>,
+    command: Option<zed::Command>,
 }
 
 impl DjangoTemplateLsp {
     pub fn new() -> Self {
-        Self {
-            cached_command: None,
-        }
+        Self { command: None }
     }
 }
 
 impl LanguageServer for DjangoTemplateLsp {
+    const EXECUTABLE_NAME: &str = "djlsp";
+    const GITHUB_REPO: &str = "fourdigits/django-template-lsp";
+    const PACKAGE_NAME: &str = "django-template-lsp";
     const SERVER_ID: &str = "django-template-lsp";
 
-    fn language_server_command(
+    fn get_command_fallback(
         &mut self,
         _language_server_id: &LanguageServerId,
         worktree: &Worktree,
     ) -> Result<zed::Command> {
-        if let Some(ref command) = self.cached_command {
-            return Ok(command.clone());
-        }
-
-        if let Some(binary_path) = worktree.which(BINARY_NAME) {
-            let command = zed::Command {
-                command: binary_path,
-                args: Vec::default(),
-                env: Vec::default(),
-            };
-            self.cached_command = Some(command.clone());
-            return Ok(command);
-        }
-
         if let Some(uvx_path) = worktree.which("uvx") {
-            let command = zed::Command {
+            return Ok(zed::Command {
                 command: uvx_path,
                 args: vec![
                     "--from".to_string(),
-                    PACKAGE_NAME.to_string(),
-                    BINARY_NAME.to_string(),
+                    Self::PACKAGE_NAME.to_string(),
+                    Self::EXECUTABLE_NAME.to_string(),
                 ],
                 env: Vec::default(),
-            };
-            self.cached_command = Some(command.clone());
-            return Ok(command);
+            });
         }
 
         Err(format!(
-            "{BINARY_NAME} not found. Install uv (recommended): https://docs.astral.sh/uv/getting-started/installation/ or manually install {PACKAGE_NAME}: pip install {PACKAGE_NAME}",
+            "{} not found. See installation instructions: https://github.com/{}",
+            Self::EXECUTABLE_NAME,
+            Self::GITHUB_REPO,
         ))
+    }
+
+    fn command(&self) -> Option<&zed::Command> {
+        self.command.as_ref()
+    }
+
+    fn set_command(&mut self, command: zed::Command) {
+        self.command = Some(command);
     }
 }

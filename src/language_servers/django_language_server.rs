@@ -1,57 +1,79 @@
-use std::fs;
-use std::path::PathBuf;
-
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
-use zed_extension_api::{
-    self as zed,
-};
+use zed_extension_api::{self as zed};
 
 use super::LanguageServer;
 
-const GITHUB_REPO: &str = "joshuadavidthomas/django-language-server";
-const BINARY_NAME: &str = "djls";
-const PACKAGE_NAME: &str = "django-language-server";
-
 pub struct DjangoLanguageServer {
-    djls_path: Option<PathBuf>,
+    command: Option<zed::Command>,
 }
 
 impl DjangoLanguageServer {
     pub fn new() -> Self {
-        Self { djls_path: None }
+        Self { command: None }
     }
 }
 
 impl LanguageServer for DjangoLanguageServer {
+    const EXECUTABLE_NAME: &str = "djls";
+    const GITHUB_REPO: &str = "joshuadavidthomas/django-language-server";
+    const PACKAGE_NAME: &str = "django-language-server";
     const SERVER_ID: &str = "django-language-server";
 
-    fn language_server_command(
+    fn get_command_args(&self) -> Vec<String> {
+        vec!["serve".to_string()]
+    }
+
+    fn command(&self) -> Option<&zed::Command> {
+        self.command.as_ref()
+    }
+
+    fn set_command(&mut self, command: zed::Command) {
+        self.command = Some(command);
+    }
+
+    fn get_command_fallback(
         &mut self,
         language_server_id: &LanguageServerId,
-        worktree: &Worktree,
+        _worktree: &Worktree,
     ) -> Result<zed::Command> {
-        let needs_refresh = self
-            .djls_path
-            .as_ref()
-            .is_none_or(|path| fs::metadata(path).is_err());
+        zed::set_language_server_installation_status(
+            language_server_id,
+            &zed::LanguageServerInstallationStatus::CheckingForUpdate,
+        );
 
-        if needs_refresh {
-            let path = get_or_install_djls(language_server_id, worktree)?;
-            self.djls_path = Some(path);
+        let artifact = ReleaseArtifact::for_current_platform()?;
+        let binary_path = artifact.binary_path();
+
+        if std::fs::metadata(&binary_path).is_ok() {
+            zed::set_language_server_installation_status(
+                language_server_id,
+                &zed::LanguageServerInstallationStatus::None,
+            );
+            return Ok(zed::Command {
+                command: binary_path,
+                args: self.get_command_args(),
+                env: Vec::default(),
+            });
         }
 
-        let binary_path = self
-            .djls_path
-            .as_ref()
-            .unwrap()
-            .to_string_lossy()
-            .to_string();
+        zed::set_language_server_installation_status(
+            language_server_id,
+            &zed::LanguageServerInstallationStatus::Downloading,
+        );
+
+        artifact.download()?;
+        zed::make_file_executable(&binary_path)?;
+
+        zed::set_language_server_installation_status(
+            language_server_id,
+            &zed::LanguageServerInstallationStatus::None,
+        );
 
         Ok(zed::Command {
             command: binary_path,
-            args: vec!["serve".to_string()],
+            args: self.get_command_args(),
             env: Vec::default(),
         })
     }
@@ -74,7 +96,7 @@ impl ReleaseArtifact {
     fn for_current_platform() -> Result<Self> {
         let (os, arch) = zed::current_platform();
         let release = zed::latest_github_release(
-            GITHUB_REPO,
+            DjangoLanguageServer::GITHUB_REPO,
             zed::GithubReleaseOptions {
                 require_assets: true,
                 pre_release: false,
@@ -112,52 +134,22 @@ impl ReleaseArtifact {
             zed::Os::Linux => "linux",
             zed::Os::Windows => "windows",
         };
-        format!("{}-{}-{}-{}", PACKAGE_NAME, self.release.version, os, arch)
+        format!(
+            "{}-{}-{}-{}",
+            DjangoLanguageServer::PACKAGE_NAME,
+            self.release.version,
+            os,
+            arch
+        )
     }
 
     fn binary_path(&self) -> String {
-        format!("{}/{}", self.base_name(), BINARY_NAME)
+        format!(
+            "{}/{}",
+            self.base_name(),
+            DjangoLanguageServer::EXECUTABLE_NAME
+        )
     }
-}
-
-fn get_or_install_djls(
-    language_server_id: &LanguageServerId,
-    worktree: &zed::Worktree,
-) -> Result<PathBuf> {
-    if let Some(path) = worktree.which(BINARY_NAME.as_ref()) {
-        return Ok(PathBuf::from(path));
-    }
-
-    zed::set_language_server_installation_status(
-        language_server_id,
-        &zed::LanguageServerInstallationStatus::CheckingForUpdate,
-    );
-
-    let artifact = ReleaseArtifact::for_current_platform()?;
-    let binary_path = artifact.binary_path();
-
-    if std::fs::metadata(&binary_path).is_ok() {
-        zed::set_language_server_installation_status(
-            language_server_id,
-            &zed::LanguageServerInstallationStatus::None,
-        );
-        return Ok(PathBuf::from(binary_path));
-    }
-
-    zed::set_language_server_installation_status(
-        language_server_id,
-        &zed::LanguageServerInstallationStatus::Downloading,
-    );
-
-    artifact.download()?;
-    zed::make_file_executable(&binary_path)?;
-
-    zed::set_language_server_installation_status(
-        language_server_id,
-        &zed::LanguageServerInstallationStatus::None,
-    );
-
-    Ok(PathBuf::from(binary_path))
 }
 
 #[cfg(test)]

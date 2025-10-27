@@ -1,24 +1,23 @@
 mod language_servers;
 
-use language_servers::DjangoLanguageServer;
-use language_servers::DjangoTemplateLsp;
-use language_servers::LanguageServer;
+use std::collections::HashMap;
+
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
 use zed_extension_api::Worktree;
-use zed_extension_api::{
-    self as zed,
-};
+use zed_extension_api::{self as zed};
 
-#[derive(Default)]
+use crate::language_servers::LanguageServerInstance;
+
 struct DjangoExtension {
-    django_language_server: Option<DjangoLanguageServer>,
-    django_template_lsp: Option<DjangoTemplateLsp>,
+    language_servers: HashMap<String, LanguageServerInstance>,
 }
 
 impl zed::Extension for DjangoExtension {
     fn new() -> Self {
-        Self::default()
+        Self {
+            language_servers: HashMap::new(),
+        }
     }
 
     fn language_server_command(
@@ -26,21 +25,15 @@ impl zed::Extension for DjangoExtension {
         language_server_id: &LanguageServerId,
         worktree: &Worktree,
     ) -> Result<zed::Command> {
-        match language_server_id.as_ref() {
-            DjangoLanguageServer::SERVER_ID => {
-                let server = self
-                    .django_language_server
-                    .get_or_insert_with(DjangoLanguageServer::new);
-                server.language_server_command(language_server_id, worktree)
-            }
-            DjangoTemplateLsp::SERVER_ID => {
-                let server = self
-                    .django_template_lsp
-                    .get_or_insert_with(DjangoTemplateLsp::new);
-                server.language_server_command(language_server_id, worktree)
-            }
-            language_server_id => Err(format!("unknown language server: {language_server_id}")),
+        let id = language_server_id.as_ref();
+
+        if !self.language_servers.contains_key(id) {
+            let server = LanguageServerInstance::from_id(id)?;
+            self.language_servers.insert(id.to_string(), server);
         }
+
+        let server = self.language_servers.get_mut(id).unwrap();
+        server.language_server_command(language_server_id, worktree)
     }
 }
 
