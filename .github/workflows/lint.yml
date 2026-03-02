@@ -27,7 +27,7 @@ jobs:
           persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b
+        uses: astral-sh/setup-uv@5a095e7a2014a4212f075830d4f7277575a9d098
         with:
           activate-environment: true
           enable-cache: true
@@ -97,7 +97,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-cargo-registry-
             ${{ runner.os }}-cargo-registry-
 
-      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+      - uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98
         with:
           toolchain: nightly
           components: rustfmt
@@ -134,7 +134,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-cargo-registry-
             ${{ runner.os }}-cargo-registry-
 
-      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+      - uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98
         with:
           components: clippy
 
@@ -170,7 +170,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-cargo-registry-
             ${{ runner.os }}-cargo-registry-
 
-      - uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+      - uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98
 
       - name: Run cargo check
         run: cargo check --all-targets --all-features
