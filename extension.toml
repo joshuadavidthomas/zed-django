@@ -16,4 +16,4 @@ languages = ["Django"]
 
 [grammars.htmldjango]
 repository = "https://github.com/joshuadavidthomas/tree-sitter-htmldjango"
-commit = "60771d12aee60e4ccb220548d8a485c3aa4183cf"
+commit = "2fb8a6515e75f19854bf2c4f1620d96dbc7a1e9a"
