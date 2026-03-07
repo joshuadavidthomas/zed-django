@@ -18,6 +18,10 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Fixed
+
+- Bumped tree-sitter-htmldjango grammar to fix syntax highlighting breaking when using `_()` translation function inside variable filters (e.g. `{{ val|default:_("System") }}`). See [tree-sitter-htmldjango#4](https://github.com/joshuadavidthomas/tree-sitter-htmldjango/issues/4).
+
 ## [0.2.0]
 
 ### Added
