@@ -18,6 +18,10 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Fixed
+
+- Removed the `rust-toolchain.toml` from repo to fix compatibility with Zed extension API
+
 ## [0.2.1]
 
 ### Fixed
