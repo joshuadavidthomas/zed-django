@@ -18,6 +18,8 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+## [0.2.1]
+
 ### Fixed
 
 - Bumped tree-sitter-htmldjango grammar to fix syntax highlighting breaking when using `_()` translation function inside variable filters (e.g. `{{ val|default:_("System") }}`). See [tree-sitter-htmldjango#4](https://github.com/joshuadavidthomas/tree-sitter-htmldjango/issues/4).
@@ -88,8 +90,9 @@ If you have custom LSP settings for Django Language Server, update the language 
 
 - Josh Thomas <josh@joshthomas.dev> (maintainer)
 
-[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.2.1...HEAD
 [0.1.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.0
 [0.1.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.1
 [0.1.2]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.2
 [0.2.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.2.0
+[0.2.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.2.1
