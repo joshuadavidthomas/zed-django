@@ -115,7 +115,7 @@ This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj
 
 There are three language servers available, each with a different focus:
 
-- [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) — a general-purpose Django language server written in Rust, focused on complete static analysis with no Python runtime required. Currently covers templates, with plans to expand into settings, the ORM, and more.
+- [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) — a general-purpose Django language server written in Rust, focused on complete static analysis with no Python runtime required (WIP). Currently covers templates, with plans to expand into settings, the ORM, and more.
 - [Django LSP](https://github.com/adamghill/django-lsp) — currently focused on Django settings files (`settings.py`)
 - [Django Template LSP](https://github.com/fourdigits/django-template-lsp) — focused on Django templates
 
