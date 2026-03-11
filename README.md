@@ -5,6 +5,7 @@ A [Django](https://djangoproject.com) extension for [Zed](https://zed.dev).
 - Tree-sitter: [tree-sitter-htmldjango](https://github.com/joshuadavidthomas/tree-sitter-htmldjango)
 - Language Servers:
   - [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
+  - [Django LSP](https://github.com/adamghill/django-lsp)
   - [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
 
 ## Installation
@@ -112,41 +113,42 @@ This matches any file with `.dj.` in the name (e.g., `.dj.html`, `.dj.xml`, `.dj
 
 ## Language Servers
 
-There are two language servers available for Django templates:
+There are three language servers available, each with a different focus:
 
-- [Django Language Server](https://github.com/joshuadavidthomas/django-language-server)
-- [Django Template LSP](https://github.com/fourdigits/django-template-lsp)
+- [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) — a general-purpose Django language server written in Rust, focused on complete static analysis with no Python runtime required. Currently covers templates, with plans to expand into settings, the ORM, and more.
+- [Django LSP](https://github.com/adamghill/django-lsp) — currently focused on Django settings files (`settings.py`)
+- [Django Template LSP](https://github.com/fourdigits/django-template-lsp) — focused on Django templates
 
 ### Feature Comparison
 
-| Feature | Django Language Server | Django Template LSP |
-|---------|----------------------|---------------------|
-| Diagnostics | ✅ | ❌ |
-| Completions | ✅ (template tags) | ✅ (tags, filters, templates, load, static, URLs) |
-| Go to definition | ✅ (extend/include tags) | ✅ (templates, URLs, tags/filters, context) |
-| Find references | ✅ (extend/include tags) | ❌ |
-| Hover documentation | ❌ | ✅ (tags, filters, URLs) |
+| Feature | Django Language Server | Django LSP | Django Template LSP |
+|---------|----------------------|------------|---------------------|
+| **Scope** | Templates | Settings | Templates |
+| Diagnostics | ✅ | ✅ | ❌ |
+| Completions | ✅ (template tags) | ✅ | ✅ (tags, filters, templates, load, static, URLs) |
+| Go to definition | ✅ (extend/include tags) | ❌ | ✅ (templates, URLs, tags/filters, context) |
+| Find references | ✅ (extend/include tags) | ❌ | ❌ |
+| Hover documentation | ❌ | ✅ (defaults, descriptions, examples, Django docs links) | ✅ (tags, filters, URLs) |
 
 ### Installation and Activation
 
-The Django extension provides two language servers for Django templates. **Both language servers will start by default and run simultaneously.** You can choose to use only one by configuring which to disable in your settings (see the [Using a Language Server](#using-a-language-server) section below).
+**All three language servers will start by default and run simultaneously.** Django LSP covers settings files while Django Language Server and Django Template LSP both cover templates, so there is overlap between those two. They can co-exist without issues, but you may want to pick one or the other. You can configure which to use in your settings (see the [Using a Language Server](#using-a-language-server) section below).
 
-Both language servers follow the same installation and activation sequence:
+Each language server follows the same activation sequence:
 
-1. The Django extension checks if the language server binary (`djls` or `djlsp`) is available on your PATH.
+1. The Django extension checks if the language server binary (`djls`, `django-lsp`, or `djlsp`) is available on your PATH.
 2. If not found on PATH:
    - **Django Language Server** automatically downloads and installs from GitHub releases
+   - **Django LSP** runs via `uvx --from "django-lsp @ git+https://github.com/adamghill/django-lsp#subdirectory=python" django-lsp` if `uv` is available
    - **Django Template LSP** runs via `uvx --from django-template-lsp djlsp` if `uv` is available
-
-For manual installation of Django Template LSP, see the [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp) repository.
 
 ### Using a Language Server
 
-#### Using Django Language Server
+#### Django Language Server
 
 [Django Language Server](https://github.com/joshuadavidthomas/django-language-server) provides diagnostics, autocompletion for template tags, and navigation features for template inheritance.
 
-To use only Django Language Server (disabling Django Template LSP), add the following to your `settings.json`:
+To use only Django Language Server for templates (disabling Django Template LSP), add the following to your `settings.json`:
 
 ```json [settings]
 {
@@ -160,11 +162,31 @@ To use only Django Language Server (disabling Django Template LSP), add the foll
 
 For detailed documentation and advanced configuration options, see the [joshuadavidthomas/django-language-server](https://github.com/joshuadavidthomas/django-language-server) repository.
 
-#### Using Django Template LSP
+#### Django LSP
+
+[Django LSP](https://github.com/adamghill/django-lsp) provides context-aware completions, hover documentation, and diagnostics for Django settings files.
+
+Django LSP targets Python files and is independent of the template language servers, so it can be used alongside either or both of them.
+
+To disable Django LSP, add the following to your `settings.json`:
+
+```json [settings]
+{
+  "languages": {
+    "Python": {
+      "language_servers": ["!django-lsp", "..."]
+    }
+  }
+}
+```
+
+For detailed documentation and advanced configuration options, see the [adamghill/django-lsp](https://github.com/adamghill/django-lsp) repository.
+
+#### Django Template LSP
 
 [Django Template LSP](https://github.com/fourdigits/django-template-lsp) provides comprehensive autocompletion for tags, filters, templates, URLs, and more, along with hover documentation.
 
-To use only Django Template LSP (disabling Django Language Server), add the following to your `settings.json`:
+To use only Django Template LSP for templates (disabling Django Language Server), add the following to your `settings.json`:
 
 ```json [settings]
 {
@@ -182,13 +204,16 @@ For detailed documentation and advanced configuration options, see the [fourdigi
 
 #### Disabling Language Servers
 
-If you prefer to use only the tree-sitter syntax highlighting without any language server features, you can disable both language servers:
+If you prefer to use only the tree-sitter syntax highlighting without any language server features, you can disable all language servers:
 
 ```json [settings]
 {
   "languages": {
     "Django": {
       "language_servers": ["!django-language-server", "!django-template-lsp", "..."]
+    },
+    "Python": {
+      "language_servers": ["!django-lsp", "..."]
     }
   }
 }
