@@ -12,6 +12,7 @@ use zed_extension_api::{
 };
 
 #[derive(Default)]
+#[allow(clippy::struct_field_names)]
 struct DjangoExtension {
     django_language_server: Option<DjangoLanguageServer>,
     django_lsp: Option<DjangoLsp>,
