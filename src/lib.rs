@@ -1,6 +1,7 @@
 mod language_servers;
 
 use language_servers::DjangoLanguageServer;
+use language_servers::DjangoLsp;
 use language_servers::DjangoTemplateLsp;
 use language_servers::LanguageServer;
 use zed_extension_api::LanguageServerId;
@@ -11,8 +12,10 @@ use zed_extension_api::{
 };
 
 #[derive(Default)]
+#[allow(clippy::struct_field_names)]
 struct DjangoExtension {
     django_language_server: Option<DjangoLanguageServer>,
+    django_lsp: Option<DjangoLsp>,
     django_template_lsp: Option<DjangoTemplateLsp>,
 }
 
@@ -31,6 +34,10 @@ impl zed::Extension for DjangoExtension {
                 let server = self
                     .django_language_server
                     .get_or_insert_with(DjangoLanguageServer::new);
+                server.language_server_command(language_server_id, worktree)
+            }
+            DjangoLsp::SERVER_ID => {
+                let server = self.django_lsp.get_or_insert_with(DjangoLsp::new);
                 server.language_server_command(language_server_id, worktree)
             }
             DjangoTemplateLsp::SERVER_ID => {
@@ -53,6 +60,10 @@ impl zed::Extension for DjangoExtension {
                 let server = self
                     .django_language_server
                     .get_or_insert_with(DjangoLanguageServer::new);
+                server.language_server_initialization_options(language_server_id, worktree)
+            }
+            DjangoLsp::SERVER_ID => {
+                let server = self.django_lsp.get_or_insert_with(DjangoLsp::new);
                 server.language_server_initialization_options(language_server_id, worktree)
             }
             DjangoTemplateLsp::SERVER_ID => {

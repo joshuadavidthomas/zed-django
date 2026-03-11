@@ -10,6 +10,10 @@ repository = "https://github.com/joshuadavidthomas/zed-django"
 name = "Django Language Server"
 languages = ["Django"]
 
+[language_servers.django-lsp]
+name = "Django LSP"
+languages = ["Python"]
+
 [language_servers.django-template-lsp]
 name = "Django Template LSP"
 languages = ["Django"]
