@@ -18,6 +18,10 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Added
+
+- Added support for [Django LSP](https://github.com/adamghill/django-lsp) as a third language server, currently focused on Django settings files (`settings.py`)
+
 ## [0.2.2]
 
 ### Fixed

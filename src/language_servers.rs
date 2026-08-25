@@ -1,7 +1,9 @@
 mod django_language_server;
+mod django_lsp;
 mod django_template_lsp;
 
 pub use django_language_server::DjangoLanguageServer;
+pub use django_lsp::DjangoLsp;
 pub use django_template_lsp::DjangoTemplateLsp;
 use zed_extension_api::LanguageServerId;
 use zed_extension_api::Result;
