@@ -1,5 +1,5 @@
-set dotenv-load := true
-set unstable := true
+set dotenv-load
+set unstable
 
 # List all available commands
 [private]
@@ -16,7 +16,7 @@ clean:
     cargo clean
 
 clippy *ARGS:
-    cargo clippy --all-targets --all-features --fix {{ ARGS }} -- -D warnings
+    cargo clippy --all-targets --all-features --fix --allow-dirty {{ ARGS }} -- -D warnings
 
 fmt *ARGS:
     cargo +nightly fmt {{ ARGS }}
