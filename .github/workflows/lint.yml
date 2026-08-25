@@ -45,6 +45,8 @@ jobs:
           key: pre-commit-1|${{ hashFiles('.pre-commit-config.yaml') }}
 
       - name: Run pre-commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           SKIP=no-commit-to-branch \
           uv run --with pre-commit-uv pre-commit run --all-files
