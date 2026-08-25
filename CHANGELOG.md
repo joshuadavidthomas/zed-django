@@ -18,6 +18,10 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING**: Bumped tree-sitter-htmldjango grammar to add `{% blocktrans %}...{% endblocktrans %}` support and fix `{% verbatim %}` parsing. Verbatim bodies now remain raw content, and named blocks use `verbatim_label` nodes, changing the syntax tree for those blocks.
+
 ## [0.2.2]
 
 ### Fixed
