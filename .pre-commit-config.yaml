@@ -17,3 +17,9 @@ repos:
     rev: v1.6.0
     hooks:
       - id: zizmor
+
+  - repo: https://github.com/joshuadavidthomas/gh-actionkit
+    rev: v0.5.0
+    hooks:
+      - id: lint
+      - id: validate
