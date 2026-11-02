@@ -21,6 +21,7 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 ### Changed
 
 - **BREAKING**: Bumped tree-sitter-htmldjango grammar to add `{% blocktrans %}...{% endblocktrans %}` support and fix `{% verbatim %}` parsing. Verbatim bodies now remain raw content, and named blocks use `verbatim_label` nodes, changing the syntax tree for those blocks.
+- Clarified the error shown when Django Template LSP cannot start because neither `djlsp` nor `uvx` is on PATH: it now says uv is required, links to install instructions, and notes that Zed must be restarted (or the project reopened) after installing.
 
 ## [0.2.2]
 

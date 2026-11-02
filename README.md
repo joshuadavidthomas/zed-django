@@ -136,7 +136,9 @@ Both language servers follow the same installation and activation sequence:
 1. The Django extension checks if the language server binary (`djls` or `djlsp`) is available on your PATH.
 2. If not found on PATH:
    - **Django Language Server** automatically downloads and installs from GitHub releases
-   - **Django Template LSP** runs via `uvx --from django-template-lsp djlsp` if `uv` is available
+   - **Django Template LSP** runs via `uvx --from django-template-lsp djlsp` if [`uv`](https://docs.astral.sh/uv/getting-started/installation/) is available
+
+Django Template LSP is not downloaded automatically, so it requires either `uv` or a manual install of `djlsp`. Zed caches your shell environment per project, so after installing either one, restart Zed or reopen the project for it to be picked up.
 
 For manual installation of Django Template LSP, see the [fourdigits/django-template-lsp](https://github.com/fourdigits/django-template-lsp) repository.
 
