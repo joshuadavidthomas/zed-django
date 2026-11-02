@@ -5,7 +5,6 @@ first_line_pattern = "^\\{%\\s*(extends|load)"
 path_suffixes = ["dj.html", "dj.md", "dj.txt"]
 
 block_comment = ["{% comment %}", " {% endcomment %}"]
-line_comments = ["{# ", " #}"]
 
 autoclose_before = "}])>"
 
