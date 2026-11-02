@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Opens this repo in Zed (with the dev extension installed by .agents/setup)
+# when the orb Desktop session starts.
+set -euo pipefail
+
+# The Desktop runs this from /home/user/workspace, not the repo root.
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+
+# Zed rebuilds dev extensions with cargo, so it needs the rustup toolchain.
+# shellcheck disable=SC1091
+. "$HOME/.cargo/env"
+export PATH="$HOME/.local/bin:$PATH"
+# The Desktop renders in software (llvmpipe); skip Zed's unsupported-GPU prompt.
+export ZED_ALLOW_EMULATED_GPU=1
+
+# Amp rewrites labwc's rc.xml each session, so add a rule that maximizes Zed
+# to fit the Desktop output (which follows the viewer's size), then reload labwc.
+rc="${XDG_CONFIG_HOME:-$HOME/.config}/labwc/rc.xml"
+if [[ -f "$rc" ]] && ! grep -q 'identifier="dev.zed.Zed"' "$rc"; then
+  sed -i 's|</windowRules>|  <windowRule identifier="dev.zed.Zed">\n      <action name="Maximize" />\n    </windowRule>\n  </windowRules>|' "$rc"
+  kill -HUP "${LABWC_PID:-$(pgrep -xo labwc)}"
+fi
+
+if ! pgrep -x zed-editor >/dev/null; then
+  zed "$PWD"
+fi

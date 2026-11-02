@@ -3,3 +3,4 @@ grammars/
 *.wasm
 *.tar.gz
 *.zip
+.amp/portals/*

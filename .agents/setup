@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# Prepares a fresh Amp orb: Rust toolchains, just, Cargo deps, and pre-commit hooks.
+# Must stay idempotent and fast on a warm (snapshot-restored) filesystem.
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+step() {
+  local name="$1"
+  shift
+  echo "==> $name"
+  local start=$SECONDS
+  "$@"
+  echo "<== $name ($((SECONDS - start))s)"
+}
+
+install_rustup() {
+  if [[ ! -x "$HOME/.cargo/bin/rustup" ]]; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+      sh -s -- -y --no-modify-path --profile minimal --default-toolchain stable
+  fi
+}
+
+install_toolchains() {
+  # Stable with clippy (CI clippy/check/test), nightly rustfmt (`just fmt`),
+  # and the wasm target Zed compiles extensions for.
+  rustup toolchain install stable --profile minimal \
+    --component clippy,rustfmt --target wasm32-wasip2
+  rustup toolchain install nightly --profile minimal --component rustfmt
+  rustup default stable
+}
+
+install_just() {
+  if ! command -v just >/dev/null 2>&1; then
+    uv tool install rust-just
+  fi
+}
+
+ensure_login_path() {
+  # rustup's env file puts ~/.cargo/bin on PATH for login shells (Amp, services).
+  local marker="# zed-django: cargo env"
+  if ! grep -Fqx "$marker" "$HOME/.bash_profile" 2>/dev/null; then
+    printf '\n%s\n. "$HOME/.cargo/env"\nexport PATH="$HOME/.local/bin:$PATH"\n' "$marker" >>"$HOME/.bash_profile"
+  fi
+}
+
+warm_cargo() {
+  cargo fetch --locked
+  cargo clippy --locked --all-targets --all-features
+  cargo test --locked --all-features --no-run
+}
+
+warm_pre_commit() {
+  uv run --no-project --with pre-commit-uv pre-commit install-hooks
+}
+
+zed_extensions="$HOME/.local/share/zed/extensions"
+
+install_zed() {
+  if [[ ! -x "$HOME/.local/zed.app/libexec/zed-editor" ]]; then
+    curl -fsSL https://zed.dev/install.sh | sh
+  fi
+  # The orb is a sandbox: skip Restricted Mode (it blocks language servers),
+  # and let setup, not Zed, manage the installed version.
+  local settings="$HOME/.config/zed/settings.json"
+  if [[ ! -f "$settings" ]]; then
+    mkdir -p "$(dirname "$settings")"
+    printf '{\n  "auto_update": false,\n  "session": { "trust_all_worktrees": true }\n}\n' >"$settings"
+  fi
+}
+
+install_wasi_sdk() {
+  # Zed compiles extension grammars with wasi-sdk from its build cache; keep
+  # WASI_SDK_VERSION in step with crates/extension/src/extension_builder.rs.
+  local version=34 sdk="$zed_extensions/build/wasi-sdk"
+  if [[ "$(head -n1 "$sdk/VERSION" 2>/dev/null)" != "$version.0" ]]; then
+    local tmp
+    tmp="$(mktemp -d)"
+    curl -fsSL "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-$version/wasi-sdk-$version.0-$(uname -m)-linux.tar.gz" |
+      tar -xz -C "$tmp"
+    rm -rf "$sdk"
+    mkdir -p "$(dirname "$sdk")"
+    mv "$tmp"/wasi-sdk-* "$sdk"
+    rm -rf "$tmp"
+  fi
+}
+
+install_dev_extension() {
+  # Mirrors Zed's "Install Dev Extension": build extension.wasm and the grammar
+  # in the repo, then symlink the repo into Zed's installed extensions.
+  cargo build --locked --target wasm32-wasip2
+  cp target/wasm32-wasip2/debug/zed_django.wasm extension.wasm
+
+  local repo rev dir=grammars/htmldjango
+  repo="$(sed -n 's/^repository = "\(.*\)"/\1/p' extension.toml | tail -n1)"
+  rev="$(sed -n 's/^commit = "\(.*\)"/\1/p' extension.toml)"
+  if [[ "$(git -C "$dir" rev-parse HEAD 2>/dev/null)" != "$rev" ]]; then
+    mkdir -p "$dir"
+    git -C "$dir" init -q
+    git -C "$dir" remote add origin "$repo" 2>/dev/null || git -C "$dir" remote set-url origin "$repo"
+    git -C "$dir" fetch -q --depth 1 origin "$rev"
+    git -C "$dir" checkout -q "$rev"
+  fi
+  if [[ ! "$dir.wasm" -nt "$dir/src/parser.c" || ! "$dir.wasm" -nt "$dir/src/scanner.c" ]]; then
+    "$zed_extensions/build/wasi-sdk/bin/clang" -fPIC -shared -Os \
+      -Wl,--export=tree_sitter_htmldjango -Wl,--max-memory=4294967296 \
+      -o "$dir.wasm" -I "$dir/src" "$dir/src/parser.c" \
+      $([[ -f "$dir/src/scanner.c" ]] && echo "$dir/src/scanner.c")
+  fi
+
+  local link="$zed_extensions/installed/django"
+  if [[ "$(readlink "$link" 2>/dev/null)" != "$PWD" ]]; then
+    mkdir -p "$zed_extensions/installed"
+    rm -rf "$link"
+    ln -s "$PWD" "$link"
+  fi
+}
+
+step "rustup" install_rustup
+# shellcheck disable=SC1091
+. "$HOME/.cargo/env"
+export PATH="$HOME/.local/bin:$PATH"
+step "rust toolchains" install_toolchains
+step "just" install_just
+step "login shell PATH" ensure_login_path
+step "cargo deps and build cache" warm_cargo
+step "pre-commit hooks" warm_pre_commit
+step "zed" install_zed
+step "wasi-sdk" install_wasi_sdk
+step "zed dev extension" install_dev_extension
