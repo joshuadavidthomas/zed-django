@@ -18,14 +18,21 @@ and this project attempts to adhere to [Semantic Versioning](https://semver.org/
 
 ## [Unreleased]
 
+## [0.3.1]
+
 ### Changed
 
-- **BREAKING**: Bumped tree-sitter-htmldjango grammar to add `{% blocktrans %}...{% endblocktrans %}` support and fix `{% verbatim %}` parsing. Verbatim bodies now remain raw content, and named blocks use `verbatim_label` nodes, changing the syntax tree for those blocks.
 - Clarified the error shown when Django Template LSP cannot start because neither `djlsp` nor `uvx` is on PATH: it now says uv is required, links to install instructions, and notes that Zed must be restarted (or the project reopened) after installing.
 
 ### Fixed
 
 - Toggling a comment on a Django-scoped line no longer inserts an unclosed `{# `. Those lines now use `{% comment %}...{% endcomment %}`.
+
+## [0.3.0]
+
+### Changed
+
+- **BREAKING**: Bumped tree-sitter-htmldjango grammar to add `{% blocktrans %}...{% endblocktrans %}` support and fix `{% verbatim %}` parsing. Verbatim bodies now remain raw content, and named blocks use `verbatim_label` nodes, changing the syntax tree for those blocks.
 
 ## [0.2.2]
 
@@ -105,10 +112,12 @@ If you have custom LSP settings for Django Language Server, update the language 
 
 - Josh Thomas <josh@joshthomas.dev> (maintainer)
 
-[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.2.2...HEAD
+[unreleased]: https://github.com/joshuadavidthomas/zed-django/compare/v0.3.1...HEAD
 [0.1.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.0
 [0.1.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.1
 [0.1.2]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.1.2
 [0.2.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.2.0
 [0.2.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.2.1
 [0.2.2]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.2.2
+[0.3.0]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.3.0
+[0.3.1]: https://github.com/joshuadavidthomas/zed-django/releases/tag/v0.3.1
