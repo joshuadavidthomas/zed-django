@@ -41,7 +41,11 @@ impl LanguageServer for DjangoTemplateLsp {
         }
 
         Err(format!(
-            "{} not found. See installation instructions: https://github.com/{}",
+            "Neither {} nor uvx was found on PATH. Django Template LSP requires uv \
+             (https://docs.astral.sh/uv/getting-started/installation/) or a manual install of {} \
+             (https://github.com/{}). After installing, restart Zed or reopen the project so \
+             the updated PATH is picked up.",
+            Self::EXECUTABLE_NAME,
             Self::EXECUTABLE_NAME,
             Self::GITHUB_REPO,
         ))
